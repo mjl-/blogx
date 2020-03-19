@@ -44,7 +44,7 @@ h1, h2, h3, h4,
 .h3 {
 	font-size:1.3rem;
 	margin-top:1rem;
-	margin-bottom:0.5rem;
+	margin-bottom:.5rem;
 }
 p {
 	margin-bottom:1rem;
@@ -84,7 +84,7 @@ p {
 	padding-left:1.2rem;
 }
 .post .content li {
-	margin-bottom:0.5rem;
+	margin-bottom:.5rem;
 }
 .post .content code {
 	font-style: italic;
@@ -98,7 +98,7 @@ p {
 	font-style: normal;
 }
 .post .content pre {
-	padding:0.5em 0.5rem;
+	padding:.5em .5rem;
 	font-family:"Monaco", monospace;
 	font-size: 14px;
 	white-space: pre-wrap;
@@ -115,7 +115,7 @@ p {
 .post .content h3 {
 	font-weight:bold;
 	margin-top: 2rem;
-	margin-bottom: 0.5rem;
+	margin-bottom: .5rem;
 }
 .post .content h2 {
 	font-size: 1.3rem;
@@ -139,7 +139,7 @@ p {
 }
 .post .content td,
 .post .content th {
-	padding: 0.125rem 1rem;
+	padding: .125rem 1rem;
 }
 .post .content td:first-child,
 .post .content th:first-child {
@@ -160,14 +160,15 @@ p {
 }
 .comment input,
 .comment textarea {
-	padding:0.1em 0.2rem;
+	border-radius: .2rem;
+	padding:.1em .2rem;
 	border:1px solid #bbb;
 	width:100%;
 }
 .comment input,
 .comment textarea,
 .comment button {
-	margin-bottom:0.5rem;
+	margin-bottom:.5rem;
 }
 .comment textarea {
 	height:7ex;
@@ -176,8 +177,8 @@ p {
 	text-align:left;
 }
 .comment .form .hint {
-	margin-bottom:0.5rem;
-	font-size:0.9rem;
+	margin-bottom:.5rem;
+	font-size:.9rem;
 	color:#666;
 	font-style:italic;
 }
@@ -198,9 +199,9 @@ p {
 	vertical-align:top;
 }
 .comment .author .time {
-	font-size:0.9rem;
+	font-size:.9rem;
 	color:#888;
-	margin-bottom:0.75rem;
+	margin-bottom:.75rem;
 }
 .adminlink {
 	float:right;
@@ -210,6 +211,6 @@ p {
 }
 .adminlink a {
 	color:#ddd;
-	font-size:0.85rem;
+	font-size:.85rem;
 	text-decoration:none;
 }
