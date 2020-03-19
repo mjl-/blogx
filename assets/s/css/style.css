@@ -8,12 +8,12 @@ body {
 }
 
 body, input, textarea, button {
-	font-family: "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville, "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond", "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia, serif;
+	font-family: Ubuntu, "Palatino Linotype", Palatino, Palladio, "URW Palladio L", "Book Antiqua", Baskerville, "Bookman Old Style", "Bitstream Charter", "Nimbus Roman No9 L", Garamond, "Apple Garamond", "ITC Garamond Narrow", "New Century Schoolbook", "Century Schoolbook", "Century Schoolbook L", Georgia, serif;
 	font-size:18px;
 	color: #222;
 }
 .page {
-	max-width:45rem;
+	max-width:50rem;
 	margin:0 auto;
 	padding:1rem;
 }
@@ -58,6 +58,9 @@ p {
 .post .time {
 	color:#888;
 }
+.post .fullpost {
+	margin-top:1rem;
+}
 .post .content > :last-child {
 	margin-bottom: 0;
 }
@@ -83,14 +86,13 @@ p {
 .post .content li {
 	margin-bottom:0.5rem;
 }
-.post .content code,
+.post .content code {
+	font-style: italic;
+}
 .post .content pre
 {
 	background-color:#f8f8f8;
 	border:1px solid #ddd;
-}
-.post .content code {
-	padding:0.2em 0.5rem;
 }
 .post .content pre {
 	padding:0.5em 0.5rem;
@@ -146,7 +148,6 @@ p {
 }
 .post .commentcount {
 	margin-left: 1rem;
-	font-style: italic;
 }
 .comment {
 	padding:1em 0;

@@ -20,7 +20,7 @@
 				<div class="content">
 					{{.Body | renderShortMarkdown}}
 				</div>
-				<div>
+				<div class="fullpost">
 					<a href="{{.Slug | slug2url}}">Full post</a>
 					{{ if eq (activeCommentCount .) 1 }} <span class="commentcount">1 comment</span>
 					{{ else if gt (activeCommentCount .) 1 }} <span class="commentcount">{{ activeCommentCount . }} comments</span>
