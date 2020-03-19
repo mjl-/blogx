@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{{blogtitle}}</title>
+		<style>
+		{{inlineCSS `s/css/reset.css`}}
+		{{inlineCSS `s/css/style.css`}}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<h1 class="h1 header"><a href="{{basepath}}">{{blogtitle}}</a></h1>
+			<div class="empty">
+				<p>{{.message}}</p>
+				<p>To <a href="{{.url}}">{{.url}}</a></p>
+			</div>
+		</div>
+	</body>
+</html>

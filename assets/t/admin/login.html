@@ -1,0 +1,22 @@
+{{define "breadcrumbs"}}{{end}}
+{{define "topbuttons"}}
+{{end}}
+{{define "content"}}
+<div class="col-xs-12 col-md-4 col-md-offset-4">
+	<h3>Login</h3>
+{{if .message}}
+	<div class="alert-error block">
+		{{.message}}
+	</div>
+{{end}}
+	<form method="POST" action="{{basepath}}a/login/" class="form">
+		<input type="hidden" name="next" value="{{.next}}" />
+		<div class="form-group">
+			<input class="form-control" type="password" name="password" placeholder="Password" />
+		</div>
+		<div class="form-group">
+			<button class="btn btn-primary">Login</button>
+		</div>
+	</form>
+</div>
+{{end}}

@@ -1,0 +1,43 @@
+{{define "breadcrumbs"}}
+	<a href="../">Index </a> /
+	<span>Images</span>
+{{end}}
+{{define "topbuttons"}}{{end}}
+{{define "content"}}
+<div class="col-xs-12">
+	<h2>Images</h2>
+{{range .images}}
+	<div style="display:inline-block; margin:1ex">
+		<div style="text-align:center">{{.Slug}}</div>
+	{{ if .Mimetype | hasPrefix "image/" }}
+		<img style="box-shadow:0 0 10px #888" src="{{. | image2img | thumbnail 200 200 | inlineImage}}" alt="{{.Title}}" />
+	{{ else if .Mimetype | hasPrefix "video/" }}
+		<video style="box-shadow:0 0 10px #888" src="{{. | inlineImage}}" alt="{{.Title}}" loop controls />
+	{{ end }}
+	</div>
+{{end}}
+</div>
+
+<div class="col-xs-12 col-md-8">
+	<h2>New image</h2>
+	<form method="POST" action="../image-create/" class="form" enctype="multipart/form-data">
+		{{csrf}}
+		<div class="form-group">
+			<label>Slug</label>
+			<input class="form-control" type="text" name="slug" />
+		</div>
+		<div class="form-group">
+			<label>Title</label>
+			<input class="form-control" type="text" name="title" />
+		</div>
+		<div class="form-group">
+			<label>Image</label>
+			<input class="form-control" type="file" name="image" />
+		</div>
+		<div class="form-group">
+			<button class="btn btn-primary">Upload image</button>
+		</div>
+	</form>
+</div>
+	
+{{end}}

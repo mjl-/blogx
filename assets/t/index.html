@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{{blogtitle}}</title>
+		<link rel="icon" href="data:;base64,=">
+		<style>
+		{{inlineCSS `s/css/reset.css`}}
+		{{inlineCSS `s/css/style.css`}}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<h1 class="h1 header"><a href="{{basepath}}">{{blogtitle}}</a></h1>
+		{{range .posts}}
+			<div class="post">
+				<div class="time">{{.Time | date}}</div>
+				<h2 class="h2 title"><a href="{{.Slug | slug2url}}">{{.Title}}</a></h2>
+				<div class="content">
+					{{.Body | renderShortMarkdown}}
+				</div>
+				<div>
+					<a href="{{.Slug | slug2url}}">Full post</a>
+					{{ if eq (activeCommentCount .) 1 }} <span class="commentcount">1 comment</span>
+					{{ else if gt (activeCommentCount .) 1 }} <span class="commentcount">{{ activeCommentCount . }} comments</span>
+					{{ end }}
+				</div>
+			</div>
+		{{end}}
+
+	{{if .olderposts}}
+			<h3 class="h3">Older posts:</h3>
+		{{range .olderposts}}
+			<div><a href="{{.Slug | slug2url}}">{{.Title}}</a></div>
+		{{end}}
+	{{end}}
+			<div class="adminlink"><a href="{{basepath}}a/">edit</a></div>
+		</div>
+	</body>
+</html>

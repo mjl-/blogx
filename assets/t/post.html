@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{{.post.Title}}</title>
+		<link rel="icon" href="data:;base64,=">
+		<style>
+		{{inlineCSS `s/css/reset.css`}}
+		{{inlineCSS `s/css/style.css`}}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<div class="h1 header"><a href="{{basepath}}">{{blogtitle}}</a></div>
+		{{with .post}}
+			<div class="post">
+				<div class="time">{{.Time | date}}</div>
+				<h1 class="h2 title">{{.Title}}</h1>
+				<div class="content">
+					{{.Body | renderMarkdown}}
+				</div>
+			</div>
+		{{end}}
+
+			<h2 class="h3">Comments</h2>
+			<div class="comment">
+				<form method="POST" action="comment" class="form">
+					<div style="display:none"><input type="text" name="url" value="" /></div>
+					<div style="display:none"><input type="text" name="more" value="dontchange" /></div>
+					<div class="author">
+						<input type="text" name="author" value="" placeholder="name" onfocus="document.getElementById('author-hint').style.display='block'" />
+						<div style="display:none" id="author-hint" class="hint">Fill in a free-form (pseudo)name.</div>
+					</div>
+					<div class="text">
+						<textarea name="body" placeholder="message" onfocus="document.getElementById('message-hint').style.display='block'"></textarea>
+						<div style="display:none" id="message-hint" class="hint">Newlines are preserved. Only plain text, no HTML or markdown. Comments with links are held back for moderation.</div>
+						<button type="submit">Post comment</button>
+					</div>
+					<div style="clear:both"></div>
+				</form>
+			</div>
+		{{range .post.Comments}}
+			{{if .Active}}
+			<div class="comment" id="comment-{{.ID}}">
+				<div class="author">{{.Author}}<div class="time time-age" data-agetime="{{ .Time | timestamp }}"></div></div>
+				<pre class="text">{{.Body}}</pre>
+			</div>
+			{{end}}
+		{{end}}
+			<div class="adminlink"><a href="{{basepath}}a/post/{{.post.ID}}">edit</a></div>
+		</div>
+		<script>
+(function() {
+	var setAge = function(elem) {
+		var secs = (new Date() - new Date(elem.dataset.agetime))/1000;
+		elem.textContent = (function() {
+			var years = Math.floor(secs / (365*24*3600));
+			if (years > 1) {
+				return years + ' years';
+			}
+			var months = Math.floor(secs / (30*24*3600));
+			if (months > 1) {
+				return months + ' months';
+			}
+			var days = Math.floor(secs / (24*3600));
+			if (days > 1) {
+				return days + ' days';
+			}
+			var hours = Math.floor(secs / 3600);
+			if (hours > 1) {
+				return hours + ' hours';
+			}
+			var mins = Math.floor(secs / 60);
+			if (mins >= 1) {
+				return mins + ' mins';
+			}
+			return 'just now';
+		})();
+	};
+	window.addEventListener('load', function() {
+		var l = document.querySelectorAll('.time-age');
+		for (var i = 0; i < l.length; i++) {
+			var e = l[i];
+			setAge(e);
+			setInterval(function() {
+				setAge(e);
+			}, 60*1000);
+		}
+	});
+})();
+		</script>
+	</body>
+</html>

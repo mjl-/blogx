@@ -1,0 +1,110 @@
+{{define "breadcrumbs"}}
+	<a href="../">Index</a> /
+	<span>Post {{ .post.ID }} - {{ .post.Title }}</span>
+{{end}}
+{{define "topbuttons"}}
+	<form style="display:inline-block" method="POST" action="../post-preview/{{.post.ID}}">
+		{{csrf}}
+		<button class="btn btn-default btn-sm">Preview</button>
+	</form>
+	<a class="btn btn-default btn-sm" href="{{.post.Slug | slug2url}}">View on website</a>
+	<form style="display:inline-block" method="POST" action="../post-delete/{{.post.ID}}">
+		{{csrf}}
+		<button class="btn btn-danger btn-sm">Delete</button>
+	</form>
+{{end}}
+{{define "content"}}
+<div class="col-xs-12 col-md-8">
+	<h2>Post</h2>
+	<form method="POST" action="../post-save/{{.post.ID}}" class="form">
+		{{csrf}}
+		<div class="form-group">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" name="active" {{if .post.Active}}checked{{end}} />
+					Active
+				</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Slug</label>
+			<input class="form-control" type="text" name="slug" value="{{.post.Slug}}" />
+		</div>
+		<div class="form-group">
+			<label>Title</label>
+			<input class="form-control" type="text" name="title" value="{{.post.Title}}" />
+		</div>
+		<div class="form-group">
+			<label>Datetime</label>
+			<input class="form-control" type="text" name="time" value="{{.post.Time | timestamp }}" />
+		</div>
+		<div class="form-group">
+			<label>Body</label>
+			<textarea rows="10" class="form-control" name="body">{{.post.Body}}</textarea>
+		</div>
+		<div class="form-group">
+			<button class="btn btn-primary">Save</button>
+		</div>
+	</form>
+
+	<h2>Comments</h2>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Seen</th>
+				<th>Active</th>
+				<th>Time</th>
+				<th>Author</th>
+				<th>Body</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+	{{range .post.Comments}}
+		<tbody>
+			<tr>
+				<td>
+				{{if .Seen}}
+					<span class="label label-success">seen</span>
+				{{else}}
+					<span class="label label-danger">unseen</span>
+				{{end}}
+				</td>
+				<td>
+				{{if .Active}}
+					<span class="label label-success">active</span>
+				{{else}}
+					<span class="label label-danger">inactive</span>
+				{{end}}
+				</td>
+				<td>{{.Time | timestamp }}</td>
+				<td>{{.Author}}</td>
+				<td>{{.Body}}</td>
+				<td>
+					<form style="display:inline-block" method="POST" action="../comment-seen/{{.ID}}">
+						{{csrf}}
+						<button class="btn btn-default btn-sm">Seen</button>
+					</form>
+				{{if .Active}}
+					<form style="display:inline-block" method="POST" action="../comment-active/{{.ID}}">
+						{{csrf}}
+						<input type="hidden" name="active" value="no" />
+						<button class="btn btn-default btn-sm">Deactivate</button>
+					</form>
+				{{else}}
+					<form style="display:inline-block" method="POST" action="../comment-active/{{.ID}}">
+						{{csrf}}
+						<input type="hidden" name="active" value="yes" />
+						<button class="btn btn-default btn-sm">Active</button>
+					</form>
+				{{end}}
+					<form style="display:inline-block" method="POST" action="../comment-delete/{{.ID}}">
+						{{csrf}}
+						<button class="btn btn-danger btn-sm">Delete</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	{{end}}
+	</table>
+</div>
+{{end}}
