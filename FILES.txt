@@ -1,0 +1,39 @@
+Content is stored in plain files, in the data/ directory. The layout:
+
+	data/post/<postid>/post.txt
+	data/post/<postic>/comment/<commentid>.txt
+	data/image/<imageid>/image.ext
+	data/image/<imageid>/image.txt
+
+ID's are randomly generated strings.
+
+Files are just plain utf-8 text files, with fields newline-separated. We don't do locking. Reading the blog is done through cached files. We only need to read the content files when something is being changes. Which is rare. So we always just read the entire state into memory when we need to read something.
+
+post.txt:
+"v1"
+postid
+"active" or "inactive"
+slug
+title
+creation time (rfc3339)
+"body:"
+body...
+
+comment.txt:
+"v1"
+commentid
+"active" or "inactive"
+"seen" or "notseen"
+creation time (rfc3339)
+author
+"body:"
+body...
+
+image.txt:
+"v1"
+imageid
+slug
+title
+creation time (rfc3339)
+mimetype
+filename
