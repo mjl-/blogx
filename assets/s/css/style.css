@@ -94,6 +94,9 @@ p {
 	background-color:#f8f8f8;
 	border:1px solid #ddd;
 }
+.post .content pre code {
+	font-style: normal;
+}
 .post .content pre {
 	padding:0.5em 0.5rem;
 	font-family:"Monaco", monospace;
