@@ -7,12 +7,15 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
-	"net/smtp"
 	"path/filepath"
 	"strings"
 	textTemplate "text/template"
 	"time"
+
+	"github.com/emersion/go-sasl"
+	"github.com/emersion/go-smtp"
 )
 
 func compact(w io.Writer) (chan int, io.WriteCloser) {
@@ -175,17 +178,22 @@ func publicComment(slug string, w http.ResponseWriter, r *http.Request) {
 	if !active {
 		activetext = "new inactive"
 	}
-	msg := fmt.Sprintf(`Subject: %s comment, %s
+	msg := fmt.Sprintf(`From: <%s>
+To: <%s>
+Subject: %s comment, %s
 
 New comment from %s.
 %s
 %s
 
 %s
-`, activetext, author, author, r.Referer(), adminurl, body)
-	err = smtp.SendMail("localhost:25", smtp.CRAMMD5Auth("x", "x"), "mechiel@ueber.net", []string{"mechiel@ueber.net"}, []byte(msg))
-	if err != nil {
-		log.Println("sending email after new comment", err)
+`, config.Mail.From, config.Mail.To, activetext, author, author, r.Referer(), adminurl, body)
+	msg = strings.ReplaceAll(msg, "\n", "\r\n")
+
+	if config.Mail.Host != "" {
+		if err := sendMail(msg); err != nil {
+			log.Printf("sending mail: %v", err)
+		}
 	}
 
 	if active {
@@ -193,6 +201,42 @@ New comment from %s.
 	} else {
 		http.Redirect(w, r, fmt.Sprintf("%sp/%s/comment", config.BaseURL, slug), 303)
 	}
+}
+
+func sendMail(msg string) error {
+	addr := net.JoinHostPort(config.Mail.Host, fmt.Sprintf("%d", config.Mail.Port))
+	var client *smtp.Client
+	var err error
+	if config.Mail.TLS {
+		client, err = smtp.DialTLS(addr, nil)
+	} else {
+		client, err = smtp.Dial(addr)
+	}
+	if err != nil {
+		return fmt.Errorf("smtp client: %v", err)
+	}
+	defer client.Close()
+
+	if config.Mail.STARTTLS {
+		if err := client.StartTLS(nil); err != nil {
+			return fmt.Errorf("smtp starttls: %v", err)
+		}
+	}
+
+	if config.Mail.Username != "" {
+		auth := sasl.NewPlainClient("", config.Mail.Username, config.Mail.Password)
+		if err := client.Auth(auth); err != nil {
+			return fmt.Errorf("smtp auth: %v", err)
+		}
+	}
+
+	if err := client.SendMail(config.Mail.From, []string{config.Mail.To}, strings.NewReader(msg)); err != nil {
+		return fmt.Errorf("smtp send: %v", err)
+	}
+
+	client.Quit()
+
+	return nil
 }
 
 func publicPost(w http.ResponseWriter, r *http.Request) {

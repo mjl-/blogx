@@ -36,11 +36,23 @@ var config struct {
 	CookieAuthKey string
 	BlogTitle     string
 	SecureCookies bool
+	Mail          struct {
+		Host     string `sconf:"Host of submission/smtp server."`
+		Port     int    `sconf:"Port of submission/smtp server, e.g. 465 for submissions, 587 for submission, 25 for smtp."`
+		TLS      bool   `sconf:"Dial with TLS, for submissions on port 465."`
+		STARTTLS bool   `sconf:"After starting plain text connection, upgrade to TLS with STARTTLS."`
+		Username string `sconf:"If set, username for plain text authentication."`
+		Password string `sconf:"Password for authentication."`
+		From     string `sconf:"SMTP and message From."`
+		To       string `sconf:"SMTP and message To."`
+	} `sconf:"optional" sconf-doc:"Send email notifications about new potentially spammy comments with this configuration.`
 }
 
 func main() {
+	log.SetFlags(0)
+
 	if len(os.Args) < 2 {
-		log.Println("usage: blogx { config-test | config-describe | serve | version")
+		log.Println("usage: blogx { config-test | config-describe | serve | version }")
 		os.Exit(2)
 	}
 

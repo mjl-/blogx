@@ -2,6 +2,10 @@
 github.com/beorn7/perks/quantile
 # github.com/dchest/cssmin v0.0.0-20151210170030-fb8d9b44afdc
 github.com/dchest/cssmin
+# github.com/emersion/go-sasl v0.0.0-20220912192320-0145f2c60ead
+github.com/emersion/go-sasl
+# github.com/emersion/go-smtp v0.16.0
+github.com/emersion/go-smtp
 # github.com/golang/protobuf v1.2.0
 github.com/golang/protobuf/proto
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
