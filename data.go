@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"sort"
 	"strings"
@@ -50,7 +49,7 @@ type image struct {
 }
 
 func (img *image) Data() ([]byte, error) {
-	return ioutil.ReadFile("data/image/" + img.ID + "/" + img.Filename)
+	return os.ReadFile("data/image/" + img.ID + "/" + img.Filename)
 }
 
 func readStore() (st *store, rerr error) {
@@ -69,7 +68,7 @@ func readStore() (st *store, rerr error) {
 	var posts []*post
 	var images []*image
 
-	l, err := ioutil.ReadDir("data/post")
+	l, err := os.ReadDir("data/post")
 	if err != nil {
 		return nil, fmt.Errorf("listing posts: %s", err)
 	}
@@ -85,7 +84,7 @@ func readStore() (st *store, rerr error) {
 		return posts[i].Time.After(posts[j].Time)
 	})
 
-	l, err = ioutil.ReadDir("data/image")
+	l, err = os.ReadDir("data/image")
 	if err != nil {
 		return nil, fmt.Errorf("listing images: %s", err)
 	}
@@ -219,13 +218,13 @@ func (p *parser) Text(line string, v *string) {
 	if s != line {
 		p.errorf("got %q, expected start of text marker %q", s, line)
 	}
-	buf, err := ioutil.ReadAll(p.r)
+	buf, err := io.ReadAll(p.r)
 	p.check(err, "reading remaining text")
 	*v = string(buf)
 }
 
 func (p *parser) EOF() {
-	buf, err := ioutil.ReadAll(p.r)
+	buf, err := io.ReadAll(p.r)
 	p.check(err, "reading for eof")
 	if len(buf) != 0 {
 		p.errorf("got %q, expected eof", string(buf))
@@ -251,7 +250,7 @@ func readPost(filename string, id string) (po *post) {
 	p.Text("body:", &po.Body)
 
 	commentDir := fmt.Sprintf("data/post/%s/comment", po.ID)
-	l, err := ioutil.ReadDir(commentDir)
+	l, err := os.ReadDir(commentDir)
 	if err != nil && os.IsNotExist(err) {
 		return
 	}

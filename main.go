@@ -7,15 +7,16 @@
 package main
 
 import (
+	"embed"
 	"flag"
 	"html/template"
+	"io/fs"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	textTemplate "text/template"
 
-	"github.com/mjl-/httpasset"
 	"github.com/mjl-/sconf"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -27,8 +28,10 @@ var (
 	textFuncs textTemplate.FuncMap
 
 	baseURL *url.URL
-	httpFS  = httpasset.Init("assets")
 )
+
+//go:embed assets
+var fsys embed.FS
 
 var config struct {
 	Password      string
@@ -45,7 +48,7 @@ var config struct {
 		Password string `sconf:"Password for authentication."`
 		From     string `sconf:"SMTP and message From."`
 		To       string `sconf:"SMTP and message To."`
-	} `sconf:"optional" sconf-doc:"Send email notifications about new potentially spammy comments with this configuration.`
+	} `sconf:"optional" sconf-doc:"Send email notifications about new potentially spammy comments with this configuration."`
 }
 
 func main() {
@@ -82,17 +85,17 @@ func main() {
 }
 
 func serve(args []string) {
-	fs := flag.NewFlagSet("serve", flag.ExitOnError)
-	addr := fs.String("addr", "localhost:5011", "Address to listen on")
-	listenAdmin := fs.String("listenadmin", "localhost:5012", "Address to listen on for admin handlers like prometheus metrics")
-	fs.Usage = func() {
+	fl := flag.NewFlagSet("serve", flag.ExitOnError)
+	addr := fl.String("addr", "localhost:5011", "Address to listen on")
+	listenAdmin := fl.String("listenadmin", "localhost:5012", "Address to listen on for admin handlers like prometheus metrics")
+	fl.Usage = func() {
 		log.Printf("usage: blogx serve blogx.conf")
-		fs.PrintDefaults()
+		fl.PrintDefaults()
 	}
-	fs.Parse(args)
-	args = fs.Args()
+	fl.Parse(args)
+	args = fl.Args()
 	if len(args) != 1 {
-		fs.Usage()
+		fl.Usage()
 		os.Exit(2)
 	}
 
@@ -108,8 +111,13 @@ func serve(args []string) {
 
 	http.Handle("/metrics", promhttp.Handler())
 
+	sfs, err := fs.Sub(fsys, "assets")
+	if err != nil {
+		log.Fatalf("fsys sub: %v", err)
+	}
+
 	mux := http.NewServeMux()
-	mux.Handle(baseURL.Path+"s/", stripBase(http.FileServer(httpFS)))
+	mux.Handle(baseURL.Path+"s/", stripBase(http.FileServer(http.FS(sfs))))
 	mux.Handle(baseURL.Path+"p/", handleHTTPError(stripBase(http.HandlerFunc(publicPost))))
 	mux.Handle(baseURL.Path+"a/", handleHTTPError(stripBase(http.HandlerFunc(admin))))
 	mux.Handle(baseURL.Path, handleHTTPError(stripBase(http.HandlerFunc(index))))

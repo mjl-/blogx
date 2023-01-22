@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	imagelib "image"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -52,10 +52,10 @@ func formatDate(tm time.Time) string {
 }
 
 func inlineCSS(path string) template.CSS {
-	f, err := httpFS.Open("/" + path)
+	f, err := fsys.Open("assets/" + path)
 	httpCheck(err)
 	defer f.Close()
-	buf, err := ioutil.ReadAll(f)
+	buf, err := io.ReadAll(f)
 	httpCheck(err)
 	return template.CSS(string(buf))
 }

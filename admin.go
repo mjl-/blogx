@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -17,10 +17,10 @@ func generate(w http.ResponseWriter, args map[string]interface{}, templatePaths 
 	httpCheck(err)
 	paths := append([]string{"t/admin.html"}, templatePaths...)
 	for _, path := range paths {
-		f, err := httpFS.Open("/" + path)
+		f, err := fsys.Open("assets/" + path)
 		httpCheck(err)
 		defer f.Close()
-		templ, err := ioutil.ReadAll(f)
+		templ, err := io.ReadAll(f)
 		httpCheck(err)
 		t, err = t.Parse(string(templ))
 		httpCheck(err)
@@ -234,7 +234,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		default:
 			abortUserError("Unknown image file extension, please upload a .jpg, .png, .gif or .mp4.")
 		}
-		buf, err := ioutil.ReadAll(f)
+		buf, err := io.ReadAll(f)
 		httpCheck(err)
 		img := &image{
 			ID:       newID(),

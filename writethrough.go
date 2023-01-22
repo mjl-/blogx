@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -13,7 +12,7 @@ func writethrough(filename string, w io.Writer) (io.Writer, *os.File) {
 	wtf, err := os.Create(filename)
 	if err != nil {
 		log.Println("writethrough:", err)
-		return io.MultiWriter(w, ioutil.Discard), nil
+		return io.MultiWriter(w, io.Discard), nil
 	}
 	return io.MultiWriter(w, wtf), wtf
 }

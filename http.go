@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -103,10 +102,10 @@ func init() {
 }
 
 func parseTemplate(path string) *template.Template {
-	f, err := httpFS.Open("/" + path)
+	f, err := fsys.Open("assets/" + path)
 	httpCheck(err)
 	defer f.Close()
-	templ, err := ioutil.ReadAll(f)
+	templ, err := io.ReadAll(f)
 	httpCheck(err)
 	return template.Must(template.New(path).Funcs(funcs).Parse(string(templ)))
 }
@@ -312,10 +311,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 		posts, olderPosts = posts[:10], posts[10:]
 	}
 
-	f, err := httpFS.Open("/t/index.html")
+	f, err := fsys.Open("assets/t/index.html")
 	httpCheck(err)
 	defer f.Close()
-	templ, err := ioutil.ReadAll(f)
+	templ, err := io.ReadAll(f)
 	httpCheck(err)
 	cthtml(w)
 
