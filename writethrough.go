@@ -8,7 +8,7 @@ import (
 )
 
 func writethrough(filename string, w io.Writer) (io.Writer, *os.File) {
-	os.MkdirAll(path.Dir(filename), 0771)
+	os.MkdirAll(path.Dir(filename), 0775)
 	wtf, err := os.Create(filename)
 	if err != nil {
 		log.Println("writethrough:", err)
