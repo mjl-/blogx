@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"path/filepath"
+	"regexp"
 	"strings"
 	textTemplate "text/template"
 	"time"
@@ -118,6 +119,8 @@ func parseTextTemplateString(name, t string) *textTemplate.Template {
 	return textTemplate.Must(textTemplate.New(name).Funcs(textFuncs).Parse(t))
 }
 
+var emailregexp = regexp.MustCompile(`\b[[:print:]]+@[0-9A-Za-z\.-]+\.[0-9A-Za-z\.-]+\b`)
+
 func publicComment(slug string, w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		cc, ww := compact(w)
@@ -158,8 +161,7 @@ func publicComment(slug string, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	hasURL := strings.Contains(body, "http://") || strings.Contains(body, "https://")
-	active := !hasURL
+	active := !strings.Contains(body, "http://") && !strings.Contains(body, "https://") && !emailregexp.MatchString(body)
 	c := &comment{
 		ID:     newID(),
 		PostID: p.ID,
