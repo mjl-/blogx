@@ -1,6 +1,6 @@
-module blogx
+module github.com/mjl-/blogx
 
-go 1.18
+go 1.20
 
 require (
 	github.com/dchest/cssmin v0.0.0-20151210170030-fb8d9b44afdc
