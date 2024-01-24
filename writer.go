@@ -2,19 +2,21 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	mathrand "math/rand"
 	"os"
 	"path/filepath"
 	"time"
 )
 
+var idgen = mathrand.New(mathrand.NewSource(time.Now().UnixNano()))
+
 func newID() string {
 	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-	rand.Seed(time.Now().UnixNano())
+
 	buf := make([]byte, 16)
 	for i := range buf {
-		buf[i] = characters[rand.Intn(len(characters))]
+		buf[i] = characters[idgen.Intn(len(characters))]
 	}
 	return string(buf)
 }

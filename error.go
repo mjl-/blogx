@@ -40,10 +40,6 @@ func abortUserError(s string) {
 	panic(httpUserError{errors.New(s)})
 }
 
-func abortServerError(s string) {
-	panic(httpServerError{errors.New(s)})
-}
-
 func httpCheck(err error) {
 	if err != nil {
 		log.Println(err)

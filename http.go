@@ -198,9 +198,9 @@ New comment from %s.
 	}
 
 	if active {
-		http.Redirect(w, r, fmt.Sprintf("%sp/%s/#comment-%s", config.BaseURL, slug, c.ID), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sp/%s/#comment-%s", config.BaseURL, slug, c.ID), http.StatusSeeOther)
 	} else {
-		http.Redirect(w, r, fmt.Sprintf("%sp/%s/comment", config.BaseURL, slug), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sp/%s/comment", config.BaseURL, slug), http.StatusSeeOther)
 	}
 }
 
@@ -246,11 +246,11 @@ func publicPost(w http.ResponseWriter, r *http.Request) {
 	l := strings.Split(path, "/")
 	slug := l[0]
 	if len(l) == 1 && (path == "" || filepath.Clean(path) == "/") {
-		http.Redirect(w, r, config.BaseURL, 301)
+		http.Redirect(w, r, config.BaseURL, http.StatusMovedPermanently)
 		return
 	}
 	if len(l) == 1 && !strings.HasSuffix(path, "/") {
-		http.Redirect(w, r, fmt.Sprintf("%sp/%s/", config.BaseURL, slug), 301)
+		http.Redirect(w, r, fmt.Sprintf("%sp/%s/", config.BaseURL, slug), http.StatusMovedPermanently)
 		return
 	}
 	if len(l) != 2 {

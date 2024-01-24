@@ -32,7 +32,7 @@ func generate(w http.ResponseWriter, args map[string]interface{}, templatePaths 
 
 func admin(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "a/" && r.Method == "GET" {
-		http.Redirect(w, r, fmt.Sprintf("%sa/index/", config.BaseURL), 302)
+		http.Redirect(w, r, fmt.Sprintf("%sa/index/", config.BaseURL), http.StatusFound)
 		return
 	}
 
@@ -79,7 +79,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("auth")
 		if err != nil {
 			next := fmt.Sprintf("%s%s", config.BaseURL, r.URL.Path)
-			http.Redirect(w, r, fmt.Sprintf("%sa/login/?next=%s", config.BaseURL, url.QueryEscape(next)), 303)
+			http.Redirect(w, r, fmt.Sprintf("%sa/login/?next=%s", config.BaseURL, url.QueryEscape(next)), http.StatusSeeOther)
 			return
 		}
 		verifyAuth([]byte(config.CookieAuthKey+config.Password), cookie.Value)
@@ -125,7 +125,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		err = writePost(p)
 		httpCheck(err)
 		removeWritethrough("")
-		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, p.ID), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, p.ID), http.StatusSeeOther)
 
 	case "post-save":
 		needPost(r)
@@ -150,7 +150,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 			removeWritethrough(fmt.Sprintf("data/www/p/%s/index.html", oldSlug))
 		}
 		removeWritethrough(fmt.Sprintf("data/www/p/%s/index.html", p.Slug))
-		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, p.ID), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, p.ID), http.StatusSeeOther)
 
 	case "post-delete":
 		needPost(r)
@@ -159,7 +159,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		err = deletePost(p)
 		httpCheck(err)
 		removeWritethrough(fmt.Sprintf("data/www/p/%s/index.html", p.Slug))
-		http.Redirect(w, r, fmt.Sprintf("%sa/index/", config.BaseURL), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/index/", config.BaseURL), http.StatusSeeOther)
 
 	case "post-preview":
 		needPost(r)
@@ -182,7 +182,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		err = writeComment(c)
 		httpCheck(err)
 		removeWritethrough(fmt.Sprintf("data/www/p/%s/index.html", p.Slug))
-		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, c.PostID), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, c.PostID), http.StatusSeeOther)
 
 	case "comment-active":
 		needPost(r)
@@ -192,7 +192,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		err = writeComment(c)
 		httpCheck(err)
 		removeWritethrough(fmt.Sprintf("data/www/p/%s/index.html", p.Slug))
-		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, c.PostID), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, c.PostID), http.StatusSeeOther)
 
 	case "comment-delete":
 		needPost(r)
@@ -201,7 +201,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		err = deleteComment(c)
 		httpCheck(err)
 		removeWritethrough(fmt.Sprintf("data/www/p/%s/index.html", p.Slug))
-		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, c.PostID), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/post/%s", config.BaseURL, c.PostID), http.StatusSeeOther)
 
 	case "images":
 		needGet(r)
@@ -249,7 +249,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		err = writeImageData(img, buf)
 		httpCheck(err)
 
-		http.Redirect(w, r, fmt.Sprintf("%sa/images/", config.BaseURL), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/images/", config.BaseURL), http.StatusSeeOther)
 
 	case "login":
 		switch r.Method {
@@ -261,7 +261,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		case "POST":
 			password := r.PostFormValue("password")
 			if password != config.Password {
-				http.Redirect(w, r, fmt.Sprintf("%sa/login/", config.BaseURL), 303)
+				http.Redirect(w, r, fmt.Sprintf("%sa/login/", config.BaseURL), http.StatusSeeOther)
 				return
 			}
 			setAuthCookie()
@@ -269,7 +269,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 			if next == "" {
 				next = fmt.Sprintf("%sa/index/", config.BaseURL)
 			}
-			http.Redirect(w, r, next, 303)
+			http.Redirect(w, r, next, http.StatusSeeOther)
 
 		default:
 			abort(405)
@@ -279,7 +279,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		needPost(r)
 		paramsNeed(0)
 		removeAuthCookie()
-		http.Redirect(w, r, fmt.Sprintf("%sa/login/", config.BaseURL), 303)
+		http.Redirect(w, r, fmt.Sprintf("%sa/login/", config.BaseURL), http.StatusSeeOther)
 
 	default:
 		abort(404)
