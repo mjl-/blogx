@@ -22,8 +22,6 @@ import (
 )
 
 var (
-	version = "dev"
-
 	funcs     template.FuncMap
 	textFuncs textTemplate.FuncMap
 
