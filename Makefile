@@ -3,6 +3,10 @@ run: build
 
 build:
 	CGO_ENABLED=0 go build
+	CGO_ENABLED=0 go vet
+
+check:
+	staticcheck
 
 clean:
 	CGO_ENABLED=0 go clean

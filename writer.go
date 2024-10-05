@@ -13,7 +13,6 @@ var idgen = mathrand.New(mathrand.NewSource(time.Now().UnixNano()))
 func newID() string {
 	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-
 	buf := make([]byte, 16)
 	for i := range buf {
 		buf[i] = characters[idgen.Intn(len(characters))]
