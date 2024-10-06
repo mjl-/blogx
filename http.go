@@ -190,6 +190,8 @@ New comment from %s.
 
 %s
 `, config.Mail.From, config.Mail.To, activetext, author, author, r.Referer(), adminurl, body)
+	// We may have a mix of \r\n and \n line endings. First canonicalize to \n, then to \r\n.
+	msg = strings.ReplaceAll(msg, "\r\n", "\n")
 	msg = strings.ReplaceAll(msg, "\n", "\r\n")
 
 	if config.Mail.Host != "" {
