@@ -36,6 +36,7 @@ var config struct {
 	BaseURL       string
 	CookieAuthKey string
 	BlogTitle     string
+	BlogAuthor    string
 	SecureCookies bool
 	Mail          struct {
 		Host     string `sconf:"Host of submission/smtp server."`
@@ -118,6 +119,7 @@ func serve(args []string) {
 	mux.Handle(baseURL.Path+"s/", stripBase(http.FileServer(http.FS(sfs))))
 	mux.Handle(baseURL.Path+"p/", handleHTTPError(stripBase(http.HandlerFunc(publicPost))))
 	mux.Handle(baseURL.Path+"a/", handleHTTPError(stripBase(http.HandlerFunc(admin))))
+	mux.Handle(baseURL.Path+"feed.atom", handleHTTPError(stripBase(http.HandlerFunc(atomFeed))))
 	mux.Handle(baseURL.Path, handleHTTPError(stripBase(http.HandlerFunc(index))))
 
 	log.Printf("blogx %s listening on %s and %s, see %s", version, *addr, *listenAdmin, config.BaseURL)

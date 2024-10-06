@@ -13,6 +13,7 @@
 	<body>
 		<div class="page">
 			<h1 class="h1 header"><a href="{{basepath}}">{{blogtitle}}</a></h1>
+			<div style="text-align: right"><a href="feed.atom">feed</a></div>
 		{{range .posts}}
 			<div class="post">
 				<div class="time">{{.Time | date}}</div>

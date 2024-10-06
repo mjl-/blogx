@@ -1,6 +1,6 @@
 module github.com/mjl-/blogx
 
-go 1.20
+go 1.22.0
 
 require (
 	github.com/dchest/cssmin v0.0.0-20151210170030-fb8d9b44afdc
@@ -11,6 +11,7 @@ require (
 	github.com/prometheus/client_golang v1.18.0
 	github.com/russross/blackfriday v1.6.0
 	golang.org/x/net v0.30.0
+	golang.org/x/tools v0.26.0
 )
 
 require (
