@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -270,17 +271,24 @@ func publicPost(w http.ResponseWriter, r *http.Request) {
 		abort(404)
 	}
 
-	cthtml(w)
-	mw, wtf := writethrough(fmt.Sprintf("data/www/p/%s/index.html", slug), w)
-	if wtf != nil {
-		defer wtf.Close()
-	}
-	cc, ww := compact(mw)
-	httpCheck(parseTemplate("t/post.html").Execute(ww, map[string]interface{}{
+	var b bytes.Buffer
+	ch, cw := Compacter(&b)
+	err = parseTemplate("t/post.html").Execute(cw, map[string]interface{}{
 		"post": p,
-	}))
-	ww.Close()
-	<-cc
+	})
+	cw.Close()
+	<-ch
+	httpCheck(err)
+
+	cthtml(w)
+	buf := b.Bytes()
+	w.Write(buf)
+
+	ppath := fmt.Sprintf("data/www/p/%s/index.html", slug)
+	os.MkdirAll(filepath.Dir(ppath), 0755)
+	if err := os.WriteFile(ppath, buf, 0644); err != nil {
+		log.Printf("writefile: %v", err)
+	}
 }
 
 // Print mostly empty html page, showing msg (which can contain html) and a link back to url.
@@ -318,17 +326,22 @@ func index(w http.ResponseWriter, r *http.Request) {
 	defer f.Close()
 	templ, err := io.ReadAll(f)
 	httpCheck(err)
-	cthtml(w)
 
-	mw, wtf := writethrough("data/www/index.html", w)
-	if wtf != nil {
-		defer wtf.Close()
-	}
-	cc, ww := compact(mw)
-	httpCheck(template.Must(template.New("t/index.html").Funcs(funcs).Parse(string(templ))).Execute(ww, map[string]interface{}{
+	var b bytes.Buffer
+	ch, cw := Compacter(&b)
+	err = template.Must(template.New("t/index.html").Funcs(funcs).Parse(string(templ))).Execute(cw, map[string]interface{}{
 		"posts":      posts,
 		"olderposts": olderPosts,
-	}))
-	ww.Close()
-	<-cc
+	})
+	cw.Close()
+	<-ch
+	httpCheck(err)
+
+	cthtml(w)
+	buf := b.Bytes()
+	w.Write(buf)
+
+	if err := os.WriteFile("data/www/index.html", buf, 0644); err != nil {
+		log.Printf("writefile: %v", err)
+	}
 }
