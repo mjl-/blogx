@@ -38,10 +38,11 @@ func atomFeed(w http.ResponseWriter, r *http.Request) {
 		html, err := renderShortMarkdown(p.Body)
 		httpCheck(err)
 
+		href := config.BaseURL + "p/" + p.Slug + "/"
 		entry := atom.Entry{
 			Title:   p.Title,
-			Link:    []atom.Link{{Href: config.BaseURL + "/" + p.Slug + "/"}},
-			ID:      config.BaseURL + "/" + p.Slug + "/",
+			Link:    []atom.Link{{Href: href}},
+			ID:      href,
 			Updated: atom.Time(p.Time),
 			Summary: &atom.Text{
 				Type: "html",
