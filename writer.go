@@ -75,14 +75,14 @@ func writePost(p *post) (rerr error) {
 	w.check(err, "create post file")
 	w.f = f
 	w.Linef("v1")
-	w.Linef(p.ID)
+	w.Linef("%s", p.ID)
 	if p.Active {
 		w.Linef("active")
 	} else {
 		w.Linef("inactive")
 	}
-	w.Linef(p.Slug)
-	w.Linef(p.Title)
+	w.Linef("%s", p.Slug)
+	w.Linef("%s", p.Title)
 	w.Time(p.Time)
 	w.Linef("body:")
 	w.Text(p.Body)
@@ -107,7 +107,7 @@ func writeComment(c *comment) (rerr error) {
 	w.check(err, "create comment file")
 	w.f = f
 	w.Linef("v1")
-	w.Linef(c.ID)
+	w.Linef("%s", c.ID)
 	if c.Active {
 		w.Linef("active")
 	} else {
@@ -119,7 +119,7 @@ func writeComment(c *comment) (rerr error) {
 		w.Linef("notseen")
 	}
 	w.Time(c.Time)
-	w.Linef(c.Author)
+	w.Linef("%s", c.Author)
 	w.Linef("body:")
 	w.Text(c.Body)
 	err = f.Close()
@@ -140,12 +140,12 @@ func writeImage(img *image) (rerr error) {
 	w.check(err, "create image file")
 	w.f = f
 	w.Linef("v1")
-	w.Linef(img.ID)
-	w.Linef(img.Slug)
-	w.Linef(img.Title)
+	w.Linef("%s", img.ID)
+	w.Linef("%s", img.Slug)
+	w.Linef("%s", img.Title)
 	w.Time(img.Time)
-	w.Linef(img.Mimetype)
-	w.Linef(img.Filename)
+	w.Linef("%s", img.Mimetype)
+	w.Linef("%s", img.Filename)
 	err = f.Close()
 	w.check(err, "close image")
 	return
